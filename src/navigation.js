@@ -15,3 +15,20 @@ export async function upFolder(currentPath) {
         console.error(error);
     }
 }
+
+
+export async function goDirectory(path) {
+    try {
+        const parentDir = process.cwd();
+        if (parentDir !== path) {
+            process.chdir(path);
+            console.log(`You are currently in ${process.cwd()}`);
+        } else {
+            console.log(`You are already in the root directory.`);
+        }
+        }
+     catch (error) {
+        console.error(error);
+    }
+}
+

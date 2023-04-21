@@ -1,7 +1,8 @@
 import { createInterface } from 'readline';
 import {hash} from "./hash.js";
-import { listFiles } from './file.js';
-import {upFolder} from "./navigation.js";
+import {addFile, listFiles, readFile, renameFile} from './basic-operations-with-file.js';
+import {goDirectory, upFolder} from "./navigation.js";
+import {getTable} from "./table.js";
 
 
 export async function createFileManger(username) {
@@ -12,11 +13,11 @@ export async function createFileManger(username) {
         output: process.stdout,
     });
 
-    console.log(`You are currently in ${process.cwd()}`);
+    console.log(`You are currently in ${currentPath}`);
     console.log(`Welcome to the File Manager, ${name}!`);
 
     rl.on('line', async (data) => {
-        const command = data.trim();
+        const [command, fileName, secondFile] = data.trim().split(' ');
 
         switch (command) {
 
@@ -24,19 +25,19 @@ export async function createFileManger(username) {
                 await upFolder(process.cwd());
                 break;
             case 'cd':
-                await listFiles(process.cwd());
+                await goDirectory(fileName);
                 break;
             case 'ls':
-                await listFiles(process.cwd());
-                break;
+                await getTable(process.cwd());
+                break;    //доделай !
             case 'cat':
-                await upFolder(process.cwd());
+                await readFile(fileName);
                 break;
             case 'add':
-                await listFiles(process.cwd());
+                await addFile(currentPath,fileName );
                 break;
             case 'rn':
-                await upFolder(process.cwd());
+                await renameFile(fileName, secondFile);
                 break;
             case 'cp':
                 await listFiles(process.cwd());
@@ -62,7 +63,7 @@ export async function createFileManger(username) {
             case 'decompress':
                 await upFolder(process.cwd());
                 break;
-            case 'exit':
+            case '.exit':
                 exit();
                 process.exit(0);
                 break;

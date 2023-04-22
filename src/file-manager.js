@@ -4,6 +4,7 @@ import {addFile, copyFile, deleteFile, moveFile, readFile, renameFile} from './b
 import {goDirectory, upFolder} from "./navigation.js";
 import {getTable} from "./table.js";
 import {compress, decompress} from "./compress.js";
+import {getOS} from "./system.js";
 
 
 export async function createFileManger(username) {
@@ -13,8 +14,10 @@ export async function createFileManger(username) {
         input: process.stdin,
         output: process.stdout,
     });
-
-    console.log(`You are currently in ${currentPath}`);
+function myCurrentPath(){
+    console.log(`You are currently in ${process.cwd()}`);
+}
+    console.log(`You are currently in ${process.cwd()}`);
     console.log(`Welcome to the File Manager, ${name}!`);
 
     rl.on('line', async (data) => {
@@ -22,42 +25,55 @@ export async function createFileManger(username) {
         switch (command) {
         case 'up':
            await upFolder(process.cwd());
+            myCurrentPath()
            break;
         case 'ls':
            await getTable(process.cwd());
-           break;    //доделай !
+            myCurrentPath()
+           break;
         case 'cd':
             await goDirectory(fileName);
+            myCurrentPath()
             break;
         case 'cat':
             await readFile(fileName);
+            myCurrentPath()
             break;
         case 'add':
             await addFile(currentPath,fileName );
+            myCurrentPath()
             break;
         case 'rn':
             await renameFile(fileName, secondFile);
+            myCurrentPath()
             break;
         case 'cp':
             await copyFile(fileName, secondFile);
+            myCurrentPath()
             break;
         case 'mv':
             await moveFile(fileName, secondFile);
+            myCurrentPath()
             break;
         case 'rm':
             await deleteFile(fileName);
+            myCurrentPath()
             break;
         case 'os':
-            await upFolder(process.cwd());
+            await getOS(fileName);
+            myCurrentPath()
             break;
         case 'hash':
             await hash(fileName);
+            myCurrentPath()
             break;
         case 'compress':
             await compress(fileName, secondFile);
+            myCurrentPath()
             break;
         case 'decompress':
             await decompress(fileName, secondFile);
+            myCurrentPath()
             break;
         case '.exit':
             exit();

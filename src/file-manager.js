@@ -1,8 +1,9 @@
 import { createInterface } from 'readline';
 import {hash} from "./hash.js";
-import {addFile, listFiles, readFile, renameFile} from './basic-operations-with-file.js';
+import {addFile, copyFile, deleteFile, moveFile, readFile, renameFile} from './basic-operations-with-file.js';
 import {goDirectory, upFolder} from "./navigation.js";
 import {getTable} from "./table.js";
+import {compress, decompress} from "./compress.js";
 
 
 export async function createFileManger(username) {
@@ -18,59 +19,54 @@ export async function createFileManger(username) {
 
     rl.on('line', async (data) => {
         const [command, fileName, secondFile] = data.trim().split(' ');
-
         switch (command) {
+        case 'up':
+           await upFolder(process.cwd());
+           break;
+        case 'ls':
+           await getTable(process.cwd());
+           break;    //доделай !
+        case 'cd':
+            await goDirectory(fileName);
+            break;
+        case 'cat':
+            await readFile(fileName);
+            break;
+        case 'add':
+            await addFile(currentPath,fileName );
+            break;
+        case 'rn':
+            await renameFile(fileName, secondFile);
+            break;
+        case 'cp':
+            await copyFile(fileName, secondFile);
+            break;
+        case 'mv':
+            await moveFile(fileName, secondFile);
+            break;
+        case 'rm':
+            await deleteFile(fileName);
+            break;
+        case 'os':
+            await upFolder(process.cwd());
+            break;
+        case 'hash':
+            await hash(fileName);
+            break;
+        case 'compress':
+            await compress(fileName, secondFile);
+            break;
+        case 'decompress':
+            await decompress(fileName, secondFile);
+            break;
+        case '.exit':
+            exit();
+            process.exit(0);
+            break;
 
-            case 'up':
-                await upFolder(process.cwd());
-                break;
-            case 'cd':
-                await goDirectory(fileName);
-                break;
-            case 'ls':
-                await getTable(process.cwd());
-                break;    //доделай !
-            case 'cat':
-                await readFile(fileName);
-                break;
-            case 'add':
-                await addFile(currentPath,fileName );
-                break;
-            case 'rn':
-                await renameFile(fileName, secondFile);
-                break;
-            case 'cp':
-                await listFiles(process.cwd());
-                break;
-            case 'mv':
-                await upFolder(process.cwd());
-                break;
-            case 'rm':
-                await listFiles(process.cwd());
-                break;
-            case 'os':
-                await upFolder(process.cwd());
-                break;
-            case 'list':
-                await listFiles(process.cwd());
-                break;
-            case 'hash':
-                await upFolder(process.cwd());
-                break;
-            case 'compress':
-                await listFiles(process.cwd());
-                break;
-            case 'decompress':
-                await upFolder(process.cwd());
-                break;
-            case '.exit':
-                exit();
-                process.exit(0);
-                break;
-
-            default:
-                console.log(`Command '${command}' not recognized. Type 'exit' to quit.`);
-        }
+        default:
+            console.log(`Command '${command}' not recognized. Type 'exit' to quit.`);
+    }
     });
 
     rl.on('close', () => {
